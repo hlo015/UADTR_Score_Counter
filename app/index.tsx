@@ -1,5 +1,6 @@
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Stack } from 'expo-router';
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, TextInput, TouchableOpacity, View, useColorScheme } from "react-native";
 import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
 
@@ -9,6 +10,19 @@ export default function Index() {
 
   const [rows, setRows] = useState<{ id: number; text: string; score: number }[]>([]);
   const [input, setInput] = useState("");
+
+  // Load saved rows on mount
+  useEffect(() => {
+    AsyncStorage.getItem("scoreRows")
+      .then(data => {
+        if (data) setRows(JSON.parse(data));
+      });
+  }, []);
+
+  // Save rows whenever they change
+  useEffect(() => {
+    AsyncStorage.setItem("scoreRows", JSON.stringify(rows));
+  }, [rows]);
 
   const addRow = () => {
     if (input.trim() === "") return;
