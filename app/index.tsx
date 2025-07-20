@@ -98,7 +98,7 @@ export default function Index() {
           <Text style={{ color: "#AAA", fontSize: 16 }}>Reset scores to 0</Text>
         </TouchableOpacity>
 
-        <View style={{ flex: 1 }} /> {/* This is to position the reset button to the right */}
+        <View style={{ flex: 1 }} />
 
         <TextInput
           value={input}
