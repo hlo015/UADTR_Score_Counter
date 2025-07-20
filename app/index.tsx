@@ -44,7 +44,7 @@ export default function Index() {
       width: 40,
       alignItems: "center",
       marginHorizontal: 2,
-      padding: 4,
+      paddingVertical: 10,
       borderRadius: 4,
     },
     minusButton: {
@@ -112,6 +112,7 @@ export default function Index() {
           <Text style={{ color: "#AAA", fontSize: 16 }}>Reset scores to 0</Text>
         </TouchableOpacity>
 
+        {/* This is to left align the above and right align the below */}
         <View style={{ flex: 1 }} />
 
         <TextInput
@@ -179,6 +180,12 @@ export default function Index() {
             <Text style={[styles.listText, {flex: 1}]}>{item.text}</Text>
 
             <TouchableOpacity
+              style={[styles.scoreBox]}
+            >
+              <Text style={[styles.listText]}>{item.score}</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
               onPress={() => {
                 setRows(rows =>
                   rows.map(row =>
@@ -202,12 +209,6 @@ export default function Index() {
               style={[styles.button, styles.minusButton]}
             >
               <Text style={[styles.listText, styles.buttonText]}>-1</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              style={[styles.scoreBox]}
-            >
-              <Text style={[styles.listText]}>{item.score}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
