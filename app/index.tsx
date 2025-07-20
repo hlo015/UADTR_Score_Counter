@@ -41,7 +41,12 @@ export default function Index() {
     },
     deleteButton: {
       backgroundColor: "#808080ff",
-      width: 24,
+      alignItems: "center",
+      width: 20,
+      height: 20,
+      marginLeft: 0,
+      marginRight: 6,
+      borderRadius: 4,
     },
     listText: {
       color: isDark ? "#fff" : "#000",
@@ -50,6 +55,10 @@ export default function Index() {
     buttonText: {
       color: "#fff",
       fontSize: 16,
+    },
+    deleteButtonText: {
+      color: "#fff",
+      fontSize: 14,
     }
   });
 
@@ -75,6 +84,22 @@ export default function Index() {
       {/* Row with InputBox and AddButton */}
       <View style={{ flexDirection: "row", marginVertical: 6, marginHorizontal: 6, alignItems: "center" }}>
         
+        <TouchableOpacity
+          onLongPress={() => setRows(rows.map(row => ({ ...row, score: 0 })))}
+          style={{
+            height: 32,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#444",
+            borderRadius: 4,
+            paddingHorizontal: 6,
+          }}
+        >
+          <Text style={{ color: "#AAA", fontSize: 16 }}>Reset scores to 0</Text>
+        </TouchableOpacity>
+
+        <View style={{ flex: 1 }} /> {/* This is to position the reset button to the right */}
+
         <TextInput
           value={input}
           onChangeText={setInput}
@@ -88,10 +113,11 @@ export default function Index() {
             backgroundColor: isDark ? "#222" : "#fff",
             padding: 4,
             borderRadius: 4,
-            width: 100,
+            width: 120,
             marginRight: 8,
           }}
         />
+
         <TouchableOpacity
           onPress={addRow}
           style={{
@@ -104,22 +130,6 @@ export default function Index() {
           }}
         >
           <Text style={{ color: "#fff", fontSize: 16 }}>Add</Text>
-        </TouchableOpacity>
-
-        <View style={{ flex: 1 }} /> {/* This is to position the reset button to the right */}
-
-        <TouchableOpacity
-          onPress={() => setRows(rows.map(row => ({ ...row, score: 0 })))}
-          style={{
-            height: 32,
-            justifyContent: "center",
-            alignItems: "center",
-            backgroundColor: "#666",
-            borderRadius: 4,
-            paddingHorizontal: 6,
-          }}
-        >
-          <Text style={{ color: "#fff", fontSize: 16 }}>Reset scores to 0</Text>
         </TouchableOpacity>
 
       </View>
@@ -146,10 +156,10 @@ export default function Index() {
             }}
           >
             <TouchableOpacity
-              onPress={() => deleteRow(item.id)}
-              style={[styles.button, styles.deleteButton]}
+              onLongPress={() => deleteRow(item.id)}
+              style={[styles.deleteButton]}
             >
-              <Text style={[styles.listText, styles.buttonText]}> X </Text>
+              <Text style={[styles.deleteButtonText]}> x </Text>
             </TouchableOpacity>
 
             <Text style={[styles.listText, {flex: 1}]}>{item.text}</Text>
