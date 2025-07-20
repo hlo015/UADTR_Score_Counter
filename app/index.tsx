@@ -1,6 +1,6 @@
 import { Stack } from 'expo-router';
 import React, { useState } from "react";
-import { Button, Text, TextInput, TouchableOpacity, View, useColorScheme } from "react-native";
+import { StyleSheet, Text, TextInput, TouchableOpacity, View, useColorScheme } from "react-native";
 import DraggableFlatList, { RenderItemParams } from "react-native-draggable-flatlist";
 
 export default function Index() {
@@ -20,6 +20,39 @@ export default function Index() {
     setRows(rows.filter(row => row.id !== id));
   };
 
+  // Styles
+  const styles = StyleSheet.create({
+    scoreBox: {
+      width: 54,
+      alignItems: "center",
+    },
+    button: {
+      width: 40,
+      alignItems: "center",
+      marginHorizontal: 2,
+      padding: 4,
+      borderRadius: 4,
+    },
+    minusButton: {
+      backgroundColor: "#b42e2eff",
+    },
+    plusButton: {
+      backgroundColor: "#2eb43cff",
+    },
+    deleteButton: {
+      backgroundColor: "#808080ff",
+      width: 24,
+    },
+    listText: {
+      color: isDark ? "#fff" : "#000",
+      fontSize: 30,
+    },
+    buttonText: {
+      color: "#fff",
+      fontSize: 16,
+    }
+  });
+
   return (
     <View
       style={{
@@ -33,35 +66,44 @@ export default function Index() {
           headerStyle: { backgroundColor: isDark ? "#333333" : "#fff" },
           headerTintColor: isDark ? "#fff" : "#000" ,
           headerTitleStyle: {
-            fontWeight: 'bold',
             fontSize: 30,
           },
           headerTitleAlign: 'center',
         }}
       />
 
-      {/* Spacer to push content below the header */}
-      <View style={{ height: 10 }} />
-
-      {/* Input and Add Button */}
-      <View style={{ flexDirection: "row", marginBottom: 20, justifyContent: "center", alignItems: "center" }}>
+      {/* Row with InputBox and AddButton */}
+      <View style={{ flexDirection: "row", marginVertical: 6, justifyContent: "center", alignItems: "center" }}>
         <TextInput
           value={input}
           onChangeText={setInput}
           placeholder="Player name"
           placeholderTextColor={isDark ? "#aaa" : "#888"}
           style={{
+            height: 32, // All other objects in this row should have this height
             borderWidth: 1,
             borderColor: isDark ? "#555" : "#ccc",
             color: isDark ? "#fff" : "#000",
             backgroundColor: isDark ? "#222" : "#fff",
-            padding: 8,
+            padding: 4,
             borderRadius: 4,
-            width: 180,
+            width: 100,
             marginRight: 8,
           }}
         />
-        <Button title="Add" onPress={addRow} />
+        <TouchableOpacity
+          onPress={addRow}
+          style={{
+            height: 32,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#167db9ff",
+            borderRadius: 4,
+            paddingHorizontal: 6,
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 16 }}>Add</Text>
+        </TouchableOpacity>
       </View>
 
       {/* DraggableFlatList */}
@@ -76,36 +118,23 @@ export default function Index() {
             style={{
               flexDirection: "row",
               alignItems: "center",
-              marginBottom: 10,
+              marginVertical: 4,
               backgroundColor: isActive
                 ? (isDark ? "#444" : "#ccc")
                 : (isDark ? "#222" : "#eee"),
-              padding: 10,
+              padding: 4,
               borderRadius: 6,
               width: "100%",
             }}
           >
-            <Text style={{ color: isDark ? "#fff" : "#000", flex: 1 }}>{item.text}</Text>
-
             <TouchableOpacity
-              onPress={() => {
-                setRows(rows =>
-                  rows.map(row =>
-                    row.id === item.id ? { ...row, score: row.score - 1 } : row
-                  )
-                );
-              }}
-              style={{
-                width: 40,
-                alignItems: "center",
-                marginHorizontal: 10,
-                backgroundColor: "#b42e2eff",
-                padding: 6,
-                borderRadius: 4,
-              }}
+              onPress={() => deleteRow(item.id)}
+              style={[styles.button, styles.deleteButton]}
             >
-              <Text style={{ color: "#fff" }}>-1</Text>
+              <Text style={[styles.listText, styles.buttonText]}> X </Text>
             </TouchableOpacity>
+
+            <Text style={[styles.listText, {flex: 1}]}>{item.text}</Text>
 
             <TouchableOpacity
               onPress={() => {
@@ -115,19 +144,29 @@ export default function Index() {
                   )
                 );
               }}
-              style={{
-                width: 40,
-                alignItems: "center",
-                marginHorizontal: 10,
-                backgroundColor: "#b42e2eff",
-                padding: 6,
-                borderRadius: 4,
-              }}
+              style={[styles.button, styles.minusButton]}
             >
-              <Text style={{ color: "#fff" }}>-10</Text>
+              <Text style={[styles.listText, styles.buttonText]}>-10</Text>
             </TouchableOpacity>
 
-            <Text style={{ color: isDark ? "#fff" : "#000"}}>{item.score}</Text>
+            <TouchableOpacity
+              onPress={() => {
+                setRows(rows =>
+                  rows.map(row =>
+                    row.id === item.id ? { ...row, score: row.score - 1 } : row
+                  )
+                );
+              }}
+              style={[styles.button, styles.minusButton]}
+            >
+              <Text style={[styles.listText, styles.buttonText]}>-1</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              style={[styles.scoreBox]}
+            >
+              <Text style={[styles.listText]}>{item.score}</Text>
+            </TouchableOpacity>
 
             <TouchableOpacity
               onPress={() => {
@@ -137,16 +176,9 @@ export default function Index() {
                   )
                 );
               }}
-              style={{
-                width: 40,
-                alignItems: "center",
-                marginHorizontal: 10,
-                backgroundColor: "#2eb43cff",
-                padding: 6,
-                borderRadius: 4,
-              }}
+              style={[styles.button, styles.plusButton]}
             >
-              <Text style={{ color: "#fff" }}>+1</Text>
+              <Text style={[styles.listText, styles.buttonText]}>+1</Text>
             </TouchableOpacity>
 
             <TouchableOpacity
@@ -157,29 +189,11 @@ export default function Index() {
                   )
                 );
               }}
-              style={{
-                width: 40,
-                alignItems: "center",
-                marginHorizontal: 10,
-                backgroundColor: "#2eb43cff",
-                padding: 6,
-                borderRadius: 4,
-              }}
+              style={[styles.button, styles.plusButton]}
             >
-              <Text style={{ color: "#fff" }}>+10</Text>
+              <Text style={[styles.listText, styles.buttonText]}>+10</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => deleteRow(item.id)}
-              style={{
-                marginHorizontal: 10,
-                backgroundColor: "#808080ff",
-                padding: 6,
-                borderRadius: 4,
-              }}
-            >
-              <Text style={{ color: "#fff" }}> X </Text>
-            </TouchableOpacity>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
@@ -187,7 +201,7 @@ export default function Index() {
             No players yet.
           </Text>
         }
-        style={{ width: "100%", paddingHorizontal: 10 }}
+        style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}
       />
     </View>
