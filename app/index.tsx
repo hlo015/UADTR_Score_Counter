@@ -7,12 +7,12 @@ export default function Index() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
-  const [rows, setRows] = useState<{ id: number; text: string }[]>([]);
+  const [rows, setRows] = useState<{ id: number; text: string; score: number }[]>([]);
   const [input, setInput] = useState("");
 
   const addRow = () => {
     if (input.trim() === "") return;
-    setRows([...rows, { id: Date.now(), text: input }]);
+    setRows([...rows, { id: Date.now(), text: input, score: 0 }]);
     setInput("");
   };
 
@@ -48,7 +48,7 @@ export default function Index() {
         <TextInput
           value={input}
           onChangeText={setInput}
-          placeholder="Enter row text"
+          placeholder="Player name"
           placeholderTextColor={isDark ? "#aaa" : "#888"}
           style={{
             borderWidth: 1,
@@ -69,7 +69,7 @@ export default function Index() {
         data={rows}
         keyExtractor={item => item.id.toString()}
         onDragEnd={({ data }) => setRows(data)}
-        renderItem={({ item, drag, isActive }: RenderItemParams<{ id: number; text: string }>) => (
+        renderItem={({ item, drag, isActive }: RenderItemParams<{ id: number; text: string; score: number }>) => (
           <TouchableOpacity
             onPressIn={drag}
             disabled={isActive}
@@ -82,29 +82,112 @@ export default function Index() {
                 : (isDark ? "#222" : "#eee"),
               padding: 10,
               borderRadius: 6,
-              minWidth: 250,
+              width: "100%",
             }}
           >
             <Text style={{ color: isDark ? "#fff" : "#000", flex: 1 }}>{item.text}</Text>
+
             <TouchableOpacity
-              onPress={() => deleteRow(item.id)}
+              onPress={() => {
+                setRows(rows =>
+                  rows.map(row =>
+                    row.id === item.id ? { ...row, score: row.score - 1 } : row
+                  )
+                );
+              }}
               style={{
-                marginLeft: 10,
-                backgroundColor: "#e74c3c",
+                width: 40,
+                alignItems: "center",
+                marginHorizontal: 10,
+                backgroundColor: "#b42e2eff",
                 padding: 6,
                 borderRadius: 4,
               }}
             >
-              <Text style={{ color: "#fff" }}>Delete</Text>
+              <Text style={{ color: "#fff" }}>-1</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setRows(rows =>
+                  rows.map(row =>
+                    row.id === item.id ? { ...row, score: row.score - 10 } : row
+                  )
+                );
+              }}
+              style={{
+                width: 40,
+                alignItems: "center",
+                marginHorizontal: 10,
+                backgroundColor: "#b42e2eff",
+                padding: 6,
+                borderRadius: 4,
+              }}
+            >
+              <Text style={{ color: "#fff" }}>-10</Text>
+            </TouchableOpacity>
+
+            <Text style={{ color: isDark ? "#fff" : "#000"}}>{item.score}</Text>
+
+            <TouchableOpacity
+              onPress={() => {
+                setRows(rows =>
+                  rows.map(row =>
+                    row.id === item.id ? { ...row, score: row.score + 1 } : row
+                  )
+                );
+              }}
+              style={{
+                width: 40,
+                alignItems: "center",
+                marginHorizontal: 10,
+                backgroundColor: "#2eb43cff",
+                padding: 6,
+                borderRadius: 4,
+              }}
+            >
+              <Text style={{ color: "#fff" }}>+1</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setRows(rows =>
+                  rows.map(row =>
+                    row.id === item.id ? { ...row, score: row.score + 10 } : row
+                  )
+                );
+              }}
+              style={{
+                width: 40,
+                alignItems: "center",
+                marginHorizontal: 10,
+                backgroundColor: "#2eb43cff",
+                padding: 6,
+                borderRadius: 4,
+              }}
+            >
+              <Text style={{ color: "#fff" }}>+10</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => deleteRow(item.id)}
+              style={{
+                marginHorizontal: 10,
+                backgroundColor: "#808080ff",
+                padding: 6,
+                borderRadius: 4,
+              }}
+            >
+              <Text style={{ color: "#fff" }}> X </Text>
             </TouchableOpacity>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
           <Text style={{ color: isDark ? "#aaa" : "#888", marginTop: 20 }}>
-            No rows yet.
+            No players yet.
           </Text>
         }
-        style={{ width: "100%", paddingHorizontal: 40 }}
+        style={{ width: "100%", paddingHorizontal: 10 }}
         contentContainerStyle={{ alignItems: "center" }}
       />
     </View>
