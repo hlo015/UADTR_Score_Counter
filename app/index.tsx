@@ -73,7 +73,8 @@ export default function Index() {
       />
 
       {/* Row with InputBox and AddButton */}
-      <View style={{ flexDirection: "row", marginVertical: 6, justifyContent: "center", alignItems: "center" }}>
+      <View style={{ flexDirection: "row", marginVertical: 6, marginHorizontal: 6, alignItems: "center" }}>
+        
         <TextInput
           value={input}
           onChangeText={setInput}
@@ -104,6 +105,23 @@ export default function Index() {
         >
           <Text style={{ color: "#fff", fontSize: 16 }}>Add</Text>
         </TouchableOpacity>
+
+        <View style={{ flex: 1 }} /> {/* This is to position the reset button to the right */}
+
+        <TouchableOpacity
+          onPress={() => setRows(rows.map(row => ({ ...row, score: 0 })))}
+          style={{
+            height: 32,
+            justifyContent: "center",
+            alignItems: "center",
+            backgroundColor: "#666",
+            borderRadius: 4,
+            paddingHorizontal: 6,
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 16 }}>Reset scores to 0</Text>
+        </TouchableOpacity>
+
       </View>
 
       {/* DraggableFlatList */}
