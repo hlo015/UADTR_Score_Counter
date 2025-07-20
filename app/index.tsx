@@ -215,19 +215,6 @@ export default function Index() {
               onPress={() => {
                 setRows(rows =>
                   rows.map(row =>
-                    row.id === item.id ? { ...row, score: row.score + 1 } : row
-                  )
-                );
-              }}
-              style={[styles.button, styles.plusButton]}
-            >
-              <Text style={[styles.listText, styles.buttonText]}>+1</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setRows(rows =>
-                  rows.map(row =>
                     row.id === item.id ? { ...row, score: row.score + 10 } : row
                   )
                 );
@@ -235,6 +222,19 @@ export default function Index() {
               style={[styles.button, styles.plusButton]}
             >
               <Text style={[styles.listText, styles.buttonText]}>+10</Text>
+            </TouchableOpacity>
+
+            <TouchableOpacity
+              onPress={() => {
+                setRows(rows =>
+                  rows.map(row =>
+                    row.id === item.id ? { ...row, score: row.score + 1 } : row
+                  )
+                );
+              }}
+              style={[styles.button, styles.plusButton]}
+            >
+              <Text style={[styles.listText, styles.buttonText]}>+1</Text>
             </TouchableOpacity>
 
           </TouchableOpacity>
