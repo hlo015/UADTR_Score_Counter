@@ -8,14 +8,23 @@ export default function Index() {
   const colorScheme = useColorScheme();
   const isDark = colorScheme === "dark";
 
-  const [rows, setRows] = useState<{ id: number; text: string; score: number }[]>([]);
+  const [rows, setRows] = useState<{ id: number; text: string; score: number; guessed: number; result: number }[]>([]);
   const [input, setInput] = useState("");
 
   // Load saved rows on mount
   useEffect(() => {
     AsyncStorage.getItem("scoreRows")
       .then(data => {
-        if (data) setRows(JSON.parse(data));
+        if (data) {
+          const parsed = JSON.parse(data);
+          // Ensure guessed and result are numbers for each row
+          const fixedRows = parsed.map((row: any) => ({
+            ...row,
+            guessed: typeof row.guessed === "number" ? row.guessed : 0,
+            result: typeof row.result === "number" ? row.result : 0,
+          }));
+          setRows(fixedRows);
+        }
       });
   }, []);
 
@@ -26,12 +35,36 @@ export default function Index() {
 
   const addRow = () => {
     if (input.trim() === "") return;
-    setRows([...rows, { id: Date.now(), text: input, score: 0 }]);
+    setRows([...rows, { id: Date.now(), text: input, score: 0, guessed: 0, result: 0 }]);
     setInput("");
   };
 
   const deleteRow = (id: number) => {
     setRows(rows.filter(row => row.id !== id));
+  };
+
+  const incrementGuessed = (id: number) => {
+    setRows(rows.map(row =>
+      row.id === id ? { ...row, guessed: row.guessed + 1 } : row
+    ));
+  };
+
+  const decrementGuessed = (id: number) => {
+    setRows(rows.map(row =>
+      row.id === id ? { ...row, guessed: row.guessed - 1 } : row
+    ));
+  };
+
+  const incrementResult = (id: number) => {
+    setRows(rows.map(row =>
+      row.id === id ? { ...row, result: row.result + 1 } : row
+    ));
+  };
+
+  const decrementResult = (id: number) => {
+    setRows(rows.map(row =>
+      row.id === id ? { ...row, result: row.result - 1 } : row
+    ));
   };
 
   // Styles
@@ -154,7 +187,7 @@ export default function Index() {
         data={rows}
         keyExtractor={item => item.id.toString()}
         onDragEnd={({ data }) => setRows(data)}
-        renderItem={({ item, drag, isActive }: RenderItemParams<{ id: number; text: string; score: number }>) => (
+        renderItem={({ item, drag, isActive }: RenderItemParams<{ id: number; text: string; score: number; guessed: number; result: number }>) => (
           <TouchableOpacity
             onPressIn={drag}
             disabled={isActive}
@@ -179,64 +212,44 @@ export default function Index() {
 
             <Text style={[styles.listText, {flex: 1}]}>{item.text}</Text>
 
-            <TouchableOpacity
-              style={[styles.scoreBox]}
-            >
+            {/* Score display */}
+            <TouchableOpacity style={[styles.scoreBox]}>
               <Text style={[styles.listText]}>{item.score}</Text>
             </TouchableOpacity>
 
-            <TouchableOpacity
-              onPress={() => {
-                setRows(rows =>
-                  rows.map(row =>
-                    row.id === item.id ? { ...row, score: row.score - 10 } : row
-                  )
-                );
-              }}
-              style={[styles.button, styles.minusButton]}
-            >
-              <Text style={[styles.listText, styles.buttonText]}>-10</Text>
-            </TouchableOpacity>
+            {/* Guessed number controls */}
+            <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 8 }}>
+              <TouchableOpacity
+                onPress={() => decrementGuessed(item.id)}
+                style={[styles.button, styles.minusButton]}
+              >
+                <Text style={styles.buttonText}>−</Text>
+              </TouchableOpacity>
+              <Text style={[styles.listText, { width: 40, textAlign: "center" }]}>{item.guessed}</Text>
+              <TouchableOpacity
+                onPress={() => incrementGuessed(item.id)}
+                style={[styles.button, styles.plusButton]}
+              >
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
 
-            <TouchableOpacity
-              onPress={() => {
-                setRows(rows =>
-                  rows.map(row =>
-                    row.id === item.id ? { ...row, score: row.score - 1 } : row
-                  )
-                );
-              }}
-              style={[styles.button, styles.minusButton]}
-            >
-              <Text style={[styles.listText, styles.buttonText]}>-1</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setRows(rows =>
-                  rows.map(row =>
-                    row.id === item.id ? { ...row, score: row.score + 10 } : row
-                  )
-                );
-              }}
-              style={[styles.button, styles.plusButton]}
-            >
-              <Text style={[styles.listText, styles.buttonText]}>+10</Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={() => {
-                setRows(rows =>
-                  rows.map(row =>
-                    row.id === item.id ? { ...row, score: row.score + 1 } : row
-                  )
-                );
-              }}
-              style={[styles.button, styles.plusButton]}
-            >
-              <Text style={[styles.listText, styles.buttonText]}>+1</Text>
-            </TouchableOpacity>
-
+            {/* Result number controls */}
+            <View style={{ flexDirection: "row", alignItems: "center", marginLeft: 8 }}>
+              <TouchableOpacity
+                onPress={() => decrementResult(item.id)}
+                style={[styles.button, styles.minusButton]}
+              >
+                <Text style={styles.buttonText}>−</Text>
+              </TouchableOpacity>
+              <Text style={[styles.listText, { width: 40, textAlign: "center" }]}>{item.result}</Text>
+              <TouchableOpacity
+                onPress={() => incrementResult(item.id)}
+                style={[styles.button, styles.plusButton]}
+              >
+                <Text style={styles.buttonText}>+</Text>
+              </TouchableOpacity>
+            </View>
           </TouchableOpacity>
         )}
         ListEmptyComponent={
@@ -247,6 +260,30 @@ export default function Index() {
         style={{ width: "100%" }}
         contentContainerStyle={{ alignItems: "center" }}
       />
+
+      {/* Apply button at the bottom */}
+      <View style={{ position: "absolute", bottom: 24, left: 0, right: 0, alignItems: "center" }}>
+        <TouchableOpacity
+          style={{
+            backgroundColor: "#167db9ff",
+            borderRadius: 8,
+            paddingVertical: 12,
+            paddingHorizontal: 32,
+          }}
+          onPress={() => {
+            // Update scores based on Guessed and Result
+            setRows(rows.map(row => {
+              if (row.guessed === row.result) {
+                return { ...row, score: row.score + (10 + row.guessed) };
+              } else {
+                return { ...row, score: row.score - (10 + Math.abs(row.guessed - row.result)) };
+              }
+            }));
+          }}
+        >
+          <Text style={{ color: "#fff", fontSize: 20 }}>Apply</Text>
+        </TouchableOpacity>
+      </View>
     </View>
   );
 }
