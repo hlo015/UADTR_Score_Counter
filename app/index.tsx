@@ -301,14 +301,16 @@ export default function Index() {
             paddingVertical: 12,
             paddingHorizontal: 32,
           }}
-          onPress={() => {
-            // Update scores based on Guessed and Result
+          onLongPress={() => {
+            // Update scores based on Guessed and Result, then reset guessed and result to 0
             setRows(rows.map(row => {
+              let newScore = row.score;
               if (row.guessed === row.result) {
-                return { ...row, score: row.score + (10 + row.guessed) };
+                newScore += 10 + row.guessed;
               } else {
-                return { ...row, score: row.score - (10 + Math.abs(row.guessed - row.result)) };
+                newScore -= 10 + Math.abs(row.guessed - row.result);
               }
+              return { ...row, score: newScore, guessed: 0, result: 0 };
             }));
           }}
         >
