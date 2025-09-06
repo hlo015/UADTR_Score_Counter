@@ -51,7 +51,9 @@ export default function Index() {
 
   const decrementGuessed = (id: number) => {
     setRows(rows.map(row =>
-      row.id === id ? { ...row, guessed: row.guessed - 1 } : row
+      row.id === id
+        ? { ...row, guessed: Math.max(0, row.guessed - 1) }
+        : row
     ));
   };
 
@@ -63,7 +65,9 @@ export default function Index() {
 
   const decrementResult = (id: number) => {
     setRows(rows.map(row =>
-      row.id === id ? { ...row, result: row.result - 1 } : row
+      row.id === id
+        ? { ...row, result: Math.max(0, row.result - 1) }
+        : row
     ));
   };
 
