@@ -147,7 +147,14 @@ export default function Index() {
       <View style={{ flexDirection: "row", marginVertical: 6, marginHorizontal: 6, alignItems: "center" }}>
         
         <TouchableOpacity
-          onLongPress={() => setRows(rows.map(row => ({ ...row, score: 0 })))}
+          onLongPress={() =>
+            setRows(rows.map(row => ({
+              ...row,
+              score: 0,
+              guessed: 0,
+              result: 0
+            })))
+          }
           style={{
             height: 32,
             justifyContent: "center",
