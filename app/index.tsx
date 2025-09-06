@@ -99,6 +99,11 @@ export default function Index() {
       marginRight: 6,
       borderRadius: 4,
     },
+    headerText: {
+      color: isDark ? "#aaa" : "#888",
+      fontSize: 20,
+      width: 70,
+    },
     largeText: {
       color: isDark ? "#fff" : "#000",
       fontSize: 30,
@@ -197,6 +202,22 @@ export default function Index() {
         data={rows}
         keyExtractor={item => item.id.toString()}
         onDragEnd={({ data }) => setRows(data)}
+        ListHeaderComponent={
+          <View
+            style={{
+              flexDirection: "row",
+              alignItems: "center",
+              justifyContent: "flex-end",
+              width: "100%",
+              marginBottom: -6,
+            }}
+          >
+            <Text style={[styles.headerText]}>Guess</Text>
+            <View style={{ width: 16 }} /> {/* Spacer */}
+            <Text style={[styles.headerText]}>Result</Text>
+            <View style={{ width: 6 }} /> {/* Spacer */}
+          </View>
+        }
         renderItem={({ item, drag, isActive }: RenderItemParams<{ id: number; text: string; score: number; guessed: number; result: number }>) => (
           <TouchableOpacity
             onPressIn={drag}
