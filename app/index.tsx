@@ -133,7 +133,7 @@ export default function Index() {
     >
       <Stack.Screen
         options={{
-          title: 'Score Counter',
+          title: 'UADTR Score Counter',
           headerStyle: { backgroundColor: isDark ? "#333333" : "#fff" },
           headerTintColor: isDark ? "#fff" : "#000" ,
           headerTitleStyle: {
