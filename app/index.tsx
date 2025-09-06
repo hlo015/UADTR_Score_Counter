@@ -74,10 +74,10 @@ export default function Index() {
       alignItems: "center",
     },
     button: {
-      width: 40,
+      width: 30,
       alignItems: "center",
       marginHorizontal: 2,
-      paddingVertical: 10,
+      paddingVertical: 6,
       borderRadius: 4,
     },
     minusButton: {
@@ -95,9 +95,15 @@ export default function Index() {
       marginRight: 6,
       borderRadius: 4,
     },
-    listText: {
+    largeText: {
       color: isDark ? "#fff" : "#000",
       fontSize: 30,
+    },
+    smallText: {
+      color: isDark ? "#fff" : "#000",
+      fontSize: 20,
+      width: 14,
+      textAlign: "center",
     },
     buttonText: {
       color: "#fff",
@@ -210,11 +216,11 @@ export default function Index() {
               <Text style={[styles.deleteButtonText]}> x </Text>
             </TouchableOpacity>
 
-            <Text style={[styles.listText, {flex: 1}]}>{item.text}</Text>
+            <Text style={[styles.largeText, {flex: 1}]}>{item.text}</Text>
 
             {/* Score display */}
             <TouchableOpacity style={[styles.scoreBox]}>
-              <Text style={[styles.listText]}>{item.score}</Text>
+              <Text style={[styles.largeText]}>{item.score}</Text>
             </TouchableOpacity>
 
             {/* Guessed number controls */}
@@ -225,7 +231,7 @@ export default function Index() {
               >
                 <Text style={styles.buttonText}>−</Text>
               </TouchableOpacity>
-              <Text style={[styles.listText, { width: 40, textAlign: "center" }]}>{item.guessed}</Text>
+              <Text style={[styles.smallText]}>{item.guessed}</Text>
               <TouchableOpacity
                 onPress={() => incrementGuessed(item.id)}
                 style={[styles.button, styles.plusButton]}
@@ -242,7 +248,7 @@ export default function Index() {
               >
                 <Text style={styles.buttonText}>−</Text>
               </TouchableOpacity>
-              <Text style={[styles.listText, { width: 40, textAlign: "center" }]}>{item.result}</Text>
+              <Text style={[styles.smallText]}>{item.result}</Text>
               <TouchableOpacity
                 onPress={() => incrementResult(item.id)}
                 style={[styles.button, styles.plusButton]}
